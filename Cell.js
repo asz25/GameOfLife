@@ -24,6 +24,7 @@ class Cell extends React.Component
         cellState: PropTypes.bool.isRequired,
         row: PropTypes.number.isRequired,
         column: PropTypes.number.isRequired,
+        
     }
     
     
@@ -53,7 +54,7 @@ class Cell extends React.Component
 
             <TouchableOpacity onPress = {this.handlePress}>
                 {console.log(`We made it in render phase. isAlive state is now:${this.state.isAlive} `)}
-                <Text style={!this.state.isAlive ? styles.isDead : styles.cell} />
+                <Text style={[styles.cell, !this.state.isAlive && styles.isDead]} />
             </TouchableOpacity>
 
         )
@@ -65,21 +66,19 @@ class Cell extends React.Component
 const styles = StyleSheet.create({
     cell: {
         backgroundColor:"green",
-        width: 100,
-        marginHorizontal: 25,
-        marginVertical: 35,
-        fontSize: 50,
-        textAlign: "center",
+        width: 50,
+        height: 50,
+        margin: 1,
+        borderWidth: 1.5,
+        flex: 1,
+        flexDirection: 'column', 
+        
         
     },
 
     isDead: {
-        backgroundColor:"red",
-        width: 100,
-        marginHorizontal: 25,
-        marginVertical: 35,
-        fontSize: 50,
-        textAlign: "center",    }
+        backgroundColor:"white",
+    }
 })
 
 
