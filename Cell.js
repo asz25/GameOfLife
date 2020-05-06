@@ -18,6 +18,7 @@ class Cell extends React.Component
 
     state = {
         isAlive: this.props.cellState,
+        board: this.props.board,
     }
 
     static propTypes = {
@@ -47,6 +48,7 @@ class Cell extends React.Component
         console.log(`We made it in click press. isAlive state is now:${this.state.isAlive} `)
         
     }
+
 
     render()
     {
