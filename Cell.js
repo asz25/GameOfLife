@@ -18,7 +18,6 @@ class Cell extends React.Component
 
     state = {
         isAlive: this.props.cellState,
-        board: this.props.board,
     }
 
     static propTypes = {
@@ -26,12 +25,6 @@ class Cell extends React.Component
         row: PropTypes.number.isRequired,
         column: PropTypes.number.isRequired,
         
-    }
-    
-    
-    componentDidMount()
-    {
-
     }
 
     handlePress = () =>
@@ -45,7 +38,7 @@ class Cell extends React.Component
         {
             this.setState({isAlive: true})
         }
-        console.log(`We made it in click press. isAlive state is now:${this.state.isAlive} `)
+        // console.log(`We made it in click press. isAlive state is now:${this.state.isAlive} `)
         
     }
 
@@ -55,7 +48,7 @@ class Cell extends React.Component
         return(
 
             <TouchableOpacity onPress = {this.handlePress}>
-                {console.log(`We made it in render phase. isAlive state is now:${this.state.isAlive} `)}
+                {/* {console.log(`We made it in render phase. isAlive state is now:${this.state.isAlive} `)} */}
                 <Text style={[styles.cell, !this.state.isAlive && styles.isDead]} />
             </TouchableOpacity>
 

@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 
 import Cell from './Cell.js';
+import DisplayBoard from './DisplayBoard.js';
 
 const TESTBOARD = [[false,false,false,false,false],
 [false,false,false,false,false],
@@ -36,15 +37,11 @@ const COLUMNS = 5;
 // }
 
 
-
-
-
-
-
-
 class App extends React.Component
 {
   state = {
+    timer: 1,
+
     board: [[false,false,false,false,false],
             [false,false,true,false,false],
             [false,true,false,true,false],
@@ -58,84 +55,80 @@ class App extends React.Component
             [false,false,false,false,false]],
   }
 
-  componentDidMount()
+  checkDirection = (board, cellRow, cellColumn, direction) =>
   {
+  if(direction === "up" && cellRow-1>=0 && board[cellRow-1][cellColumn] )
+          {
+              return 1;
+          }
 
+          else if(direction === "down" && cellRow+1<=ROWS-1 && board[cellRow+1][cellColumn])
+          {
+              return 1;
+          }
+
+          else if(direction === "left" && cellColumn-1>=0 && board[cellRow][cellColumn-1])
+          {
+              return 1;
+          }
+
+          else if(direction === "leftUp" && cellColumn-1>=0 && cellRow-1>=0 && board[cellRow-1][cellColumn-1])
+          {
+              return 1;
+          }
+
+          else if(direction === "leftDown" && cellColumn-1>=0 && cellRow+1<=ROWS-1 && board[cellRow+1][cellColumn-1])
+          {
+              return 1;
+          }
+
+          else if(direction === "right" && cellColumn+1<=COLUMNS-1 && board[cellRow][cellColumn+1])
+          {
+              return 1;
+          }
+
+          else if(direction === "rightUp" && cellColumn+1<=COLUMNS-1 && cellRow-1>=0  && board[cellRow-1][cellColumn+1])
+          {
+              return 1;
+          }
+
+          else if(direction === "rightDown" && cellColumn+1<=COLUMNS-1 && cellRow+1<=ROWS-1 && board[cellRow+1][cellColumn+1])
+          {
+              return 1;
+          }
+
+          else
+          {
+              return 0;
+          }
   }
 
-checkDirection = (board, cellRow, cellColumn, direction) =>
-{
-  if(direction === "up" && cellRow-1>=0 && board[cellRow-1][cellColumn] )
+  checkCell = (board, cellRow, cellColumn) =>
+  {
+        //Calling the helper method for each direction and adding it will tell us if the cell will live or die
+        var result = 0;
+        var neighborCount=0;
+        directions = ["up","down","left","right","leftUp","leftDown","rightUp","rightDown"];
+
+        for (let direction of directions)
         {
-            return 1;
+            neighborCount += this.checkDirection(board,cellRow,cellColumn,direction);
+//            System.out.println(direction+", neighborCount: "+neighborCount);
+
         }
 
-        else if(direction === "down" && cellRow+1<=ROWS-1 && board[cellRow+1][cellColumn])
-        {
-            return 1;
-        }
+        if(neighborCount==1 || neighborCount==0)
+            {result =  1;}
+        else if(neighborCount > 3)
+            {result =  2;}
+        else if(neighborCount == 3)
+            {result = 3;}
+        else if (neighborCount == 2)
+            {result = 4;}
 
-        else if(direction === "left" && cellColumn-1>=0 && board[cellRow][cellColumn-1])
-        {
-            return 1;
-        }
+        return result;
+  }
 
-        else if(direction === "leftUp" && cellColumn-1>=0 && cellRow-1>=0 && board[cellRow-1][cellColumn-1])
-        {
-            return 1;
-        }
-
-        else if(direction === "leftDown" && cellColumn-1>=0 && cellRow+1<=ROWS-1 && board[cellRow+1][cellColumn-1])
-        {
-            return 1;
-        }
-
-        else if(direction === "right" && cellColumn+1<=COLUMNS-1 && board[cellRow][cellColumn+1])
-        {
-            return 1;
-        }
-
-        else if(direction === "rightUp" && cellColumn+1<=COLUMNS-1 && cellRow-1>=0  && board[cellRow-1][cellColumn+1])
-        {
-            return 1;
-        }
-
-        else if(direction === "rightDown" && cellColumn+1<=COLUMNS-1 && cellRow+1<=ROWS-1 && board[cellRow+1][cellColumn+1])
-        {
-            return 1;
-        }
-
-        else
-        {
-            return 0;
-        }
-}
-
-checkCell = (board, cellRow, cellColumn) =>
-{
-          //Calling the helper method for each direction and adding it will tell us if the cell will live or die
-          var result = 0;
-          var neighborCount=0;
-          directions = ["up","down","left","right","leftUp","leftDown","rightUp","rightDown"];
-  
-          for (let direction of directions)
-          {
-              neighborCount += this.checkDirection(board,cellRow,cellColumn,direction);
-  //            System.out.println(direction+", neighborCount: "+neighborCount);
-  
-          }
-  
-          if(neighborCount==1 || neighborCount==0)
-              {result =  1;}
-          else if(neighborCount > 3)
-              {result =  2;}
-          else if(neighborCount == 3)
-              {result = 3;}
-          else if (neighborCount == 2)
-              {result = 4;}
-  
-          return result;
-}
 
   generation = (board) =>
   {
@@ -167,14 +160,41 @@ checkCell = (board, cellRow, cellColumn) =>
             }
 
         }
+
+    }
+    
+    this.setState( {board1: resultingBoard})
+    console.log("We finished one cycle successfully")
   }
 
-  this.setState( {board1: resultingBoard})
- 
-}
 
+  //Might allow update of board
+  componentDidMount()
+  {
+    this.timerID = setInterval(() => {
+      console.log("We have gone 2 seconds")
+      this.setState({timer: this.state.timer+1})}
+      ,2000)
+  }
 
+  componentWillUnmount()
+  {
+    clearInterval(this.timerID)
+  }
 
+  printMessage = () =>
+  {
+    console.log("We were able to call printMessage")
+    return (<Text>We made it into printMessage!</Text>)
+  }
+
+  componentDidUpdate()
+  {
+
+  }
+
+  
+  //Should now make changes or itneractions in here, should be kept pure
   render()
   {
     return(
@@ -184,22 +204,9 @@ checkCell = (board, cellRow, cellColumn) =>
         <Text>This is the javascript variable</Text>
 
         <Text>We are right before it dood</Text>
-        <View>
-          {this.state.board1.map((currentRow, index) => {
-            
-            var row = index;
-            return <FlatList
-            data={currentRow}
-            renderItem = { ({item,index}) => <Cell row={row} column = {index} cellState = {item} board={this.state.board1}/>}
-            numColumns = {5}
-            keyExtractor={(item, index) => (index.toString())}/>
-          })}
-
-
-        </View>
+        {/* Make this into a component, might allow it to re-render automatically */}
+        <DisplayBoard board={this.state.board1} rows= {ROWS} columns={COLUMNS} buttonPress = {this.generation}/>
         <Text>We went past it dood</Text>
-        <Button title="Cycle" color= "blue" onPress={() => this.generation(this.state.board1)} />
-
         {/* {() => this.generation(this.state.board1)}  */}
 
       </View>
